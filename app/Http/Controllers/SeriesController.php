@@ -159,15 +159,22 @@ class SeriesController extends Controller
         ); */
 
         $userList = User::all();
-        foreach ($userList as $user) {
+        // foreach ($userList as $user) {
+        foreach ($userList as $index => $user) {
             $email = new SeriesCreated(
                 $serie->nome,
                 $serie->id,
                 $request->seasonsQty,
                 $request->episodesQty
             );
-            Mail::to($user)->send($email);
-            sleep(2);
+            // Mail::to($user)->send($email);
+            // Mail::to($user)->queue($email);
+            // $when = new \DateTime();
+            // $when->modify($index * 2 . ' seconds');
+            $when = now()->addSeconds($index * 5);
+
+            Mail::to($user)->later($when, $email);
+            // sleep(2);
         }
 
         // Mail::to(Auth::user()->send($email));
