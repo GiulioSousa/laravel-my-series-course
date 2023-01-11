@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SeriesCreated;
 use App\Http\Middleware\Autenticador;
 use App\Http\Requests\SeriesFormRequest;
-use App\Mail\SeriesCreated;
+// use App\Mail\SeriesCreated;
 // use App\Models\Episode;
 // use App\Models\Season;
 use App\Models\Series;
-use App\Models\User;
+// use App\Models\User;
 // use App\Repositories\EloquentSeriesRepository;
 use App\Repositories\SeriesRepository;
-use Illuminate\Auth\AuthenticationException;
+// use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
+// use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Mail;
 
 // use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
     public function __construct(private SeriesRepository $repository)
-    { 
+    {
         $this->middleware(Autenticador::class)->except('index');
     }
-    
+
     public function index(Request $request)
     {
         // $series = DB::select('SELECT nome FROM series');
@@ -66,6 +67,21 @@ class SeriesController extends Controller
     {
         // $serie = $repository->add($request);
         $serie = $this->repository->add($request);
+        $seriesCreatedEvent = new SeriesCreated(
+            $serie->nome,
+            $serie->id,
+            $request->seasonsQty,
+            $request->episodesQty
+        );
+
+        /* SeriesCreated::dispatch(
+            $serie->nome,
+            $serie->id,
+            $request->seasonsQty,
+            $request->episodesQty
+        ); */
+        // $seriesCreatedEvent->dispatch();
+        event($seriesCreatedEvent);
 
         /* $request->validate([
             'nome' => ['required', 'min:3']
@@ -151,14 +167,14 @@ class SeriesController extends Controller
         // return redirect()->route('series.index');
         // return to_route('series.index');
 
-       /*  $email = new SeriesCreated(
+        /*  $email = new SeriesCreated(
             $serie->nome,
             $serie->id,
             $request->seasonsQty,
             $request->episodesQty
         ); */
 
-        $userList = User::all();
+        /* $userList = User::all();
         // foreach ($userList as $user) {
         foreach ($userList as $index => $user) {
             $email = new SeriesCreated(
@@ -175,7 +191,7 @@ class SeriesController extends Controller
 
             Mail::to($user)->later($when, $email);
             // sleep(2);
-        }
+        } // Bloco de código movido para o listener */
 
         // Mail::to(Auth::user()->send($email));
         // Mail::to($request->user())->send($email);
