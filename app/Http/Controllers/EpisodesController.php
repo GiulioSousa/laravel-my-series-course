@@ -18,12 +18,11 @@ class EpisodesController
 
     public function update(Request $request, Season $season)
     {
+        dd($request->episodes);
         $watchedEpisodes = $request->episodes;
         $season->episodes->each(function (Episode $episode) use ($watchedEpisodes) {
             $episode->watched = in_array($episode->id, $watchedEpisodes);
-            // $episode->save();
         });
-
         $season->push();
 
         return to_route('episodes.index', $season->id)
