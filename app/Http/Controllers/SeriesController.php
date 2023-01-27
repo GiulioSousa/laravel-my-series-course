@@ -69,8 +69,12 @@ class SeriesController extends Controller
         // $serie = $repository->add($request);
 
         // $request->file('cover')->storeAs('series_cover', 'nome-arquivo');
-        $coverPath = $request->file('cover')->store('series_cover', 'public');
-        $request->coverPath = $coverPath;
+        // $coverPath = $request->file('cover')->store('series_cover', 'public');
+        $coverPath = $request->hasFile('cover')
+            ? $request->file('cover')->store('series_cover', 'public')
+            : null;
+
+        $request['coverPath'] = $coverPath;
 
         $serie = $this->repository->add($request);
         $seriesCreatedEvent = new SeriesCreated(
