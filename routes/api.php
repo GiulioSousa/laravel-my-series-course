@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\ApiSeriesController;
+use App\Http\Controllers\Api\SeriesController;
+// use App\Http\Controllers\ApiSeriesController;
 use App\Models\Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return Series::all();
 }); */
 
-Route::get('/series', [ApiSeriesController::class, 'index']);
+// Route::get('/series', [SeriesController::class, 'index']);
+// Route::post('/series', [SeriesController::class, 'store']);
+
+Route::apiResource('/series', SeriesController::class);
