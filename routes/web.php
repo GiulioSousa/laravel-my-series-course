@@ -7,6 +7,7 @@ use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\Autenticador;
 use App\Mail\SeriesCreated;
+use App\Models\Series;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -93,3 +94,4 @@ Route::get('/email', function () {
         10
     );
 });
+

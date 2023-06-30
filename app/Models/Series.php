@@ -10,23 +10,21 @@ class Series extends Model
 {
     use HasFactory;
     protected $fillable = ['nome', 'cover'];
-    // protected $with = ['seasons'];
 
     public function seasons()
     {
         return $this->hasMany(Season::class, 'series_id');
     }
 
+    public function episodes()
+    {
+        return $this->hasManyThrough(Episode::class, Season::class);
+    }
+
     protected static function booted() //Função de escopo global para ordenar os dados da query pela ordem do parâmetro passado.
     {
         self::addGlobalScope('ordered', function (Builder $queryBuilder) {
             $queryBuilder->orderBy('nome');
-            // $queryBuilder->orderBy('nome', 'desc');
         });
     }
-
-    /* public function scopeActive(Builder $query) 
-    {
-        return $query->where('active', true);
-    }*/
 } 
